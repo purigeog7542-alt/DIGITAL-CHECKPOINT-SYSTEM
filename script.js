@@ -307,54 +307,107 @@ async function fetchDirectoryFromSupabase() {
         grid.innerHTML = `<div class="col-span-3 text-center py-8 text-rose-400">เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}</div>`;
     }
 }
-// ฟังก์ชันเปิด Modal รายงานสรุปยอดกะ
-function openShiftSummaryModal() {
+// ==========================================
+// 📋 ฟังก์ชันเปิด Modal รายงานสรุปยอดกะ (ดึงข้อมูลจริงจาก Supabase)
+// ==========================================
+async function openShiftSummaryModal() {
     const modal = document.getElementById('shiftModal');
     if (!modal) return;
 
-    // 1. อัปเดตวันที่และเวลาปัจจุบัน
+    // 1. อัปเดตวันที่และเวลาปัจจุบันที่หัวรายงาน
     const now = new Date();
     const dateStr = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
     const timeStr = now.toLocaleTimeString('th-TH');
-    document.getElementById('report-date-time').innerText = `วันที่พิมพ์รายงาน: ${dateStr} เวลา ${timeStr} น.`;
+    const dateTimeEl = document.getElementById('report-date-time');
+    if (dateTimeEl) {
+        dateTimeEl.innerText = `วันที่พิมพ์รายงาน: ${dateStr} เวลา ${timeStr} น.`;
+    }
 
-    // 2. ดึงข้อมูลยานพาหนะจากระบบ (สมมติว่าใช้ตัวแปรเก็บข้อมูล หรือดึงจากตารางหน้าเว็บ)
-    // หากระบบของคุณเก็บข้อมูลไว้ในตัวแปรอาเรย์ เช่น allVehicles หรือ logs ให้เรียกใช้ได้เลยครับ
-    let totalIn = 15;  // ตัวอย่างจำลอง สามารถปรับเชื่อมตัวแปรจริงได้
-    let totalOut = 12;
-
-    document.getElementById('summary-total-in').innerText = `${totalIn} คัน`;
-    document.getElementById('summary-total-out').innerText = `${totalOut} คัน`;
-    document.getElementById('summary-total-net').innerText = `${totalIn + totalOut} คัน`;
-
-    // 3. จำลองข้อมูลแยกตามประเภทยานพาหนะ (สามารถเชื่อมโยงกับอาเรย์ข้อมูลจริงในระบบ)
+    // แสดงสถานะกำลังโหลดระหว่างดึงข้อมูลจาก Supabase
+    const totalInEl = document.getElementById('summary-total-in');
+    const totalOutEl = document.getElementById('summary-total-out');
+    const totalNetEl = document.getElementById('summary-total-net');
     const typeTableBody = document.getElementById('summary-type-table-body');
-    typeTableBody.innerHTML = `
-        <tr>
-            <td class="p-3 font-medium">รถจักรยานยนต์ (Honda / Yamaha)</td>
-            <td class="p-3 text-center font-bold text-emerald-400">14 คัน</td>
-            <td class="p-3 text-stone-400">ใช้งานในพื้นที่เกษตร/ราษฎรท้องถิ่น</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium">รถยนต์กระบะ (Ford / Toyota / Isuzu)</td>
-            <td class="p-3 text-center font-bold text-amber-400">10 คัน</td>
-            <td class="p-3 text-stone-400">ขนส่งผลผลิตทางการเกษตรและเสบียง</td>
-        </tr>
-        <tr>
-            <td class="p-3 font-medium">รถบรรทุกขนาดเล็ก / อื่นๆ</td>
-            <td class="p-3 text-center font-bold text-sky-400">3 คัน</td>
-            <td class="p-3 text-stone-400">ปฏิบัติกิจธุระราชการ / หน่วยเฉพาะกิจ</td>
-        </tr>
-    `;
 
-    // แสดง Modal
+    if (totalInEl) totalInEl.innerText = `...`;
+    if (totalOutEl) totalOutEl.innerText = `...`;
+    if (totalNetEl) totalNetEl.innerText = `...`;
+    if (typeTableBody) {
+        typeTableBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-stone-400 animate-pulse">⏳ กำลังประมวลผลข้อมูลจริงจากฐานข้อมูล...</td></tr>`;
+    }
+
+    // เปิด Modal ทันที
     modal.classList.remove('hidden');
+
+    try {
+        // ดึงข้อมูลจริงจากตาราง checkpoint_logs และ checkpoints ใน Supabase
+        const { data: logsData, error: logsError } = await sb.from('checkpoint_logs').select('*');
+        const { data: cpData, error: cpError } = await sb.from('checkpoints').select('*');
+
+        if (logsError) throw logsError;
+
+        let totalIn = 0;
+        let totalOut = 0;
+        let vehicleTypeCounts = {};
+
+        // นับจำนวน IN และ OUT จากประวัติการใช้งานจริง (checkpoint_logs)
+        if (logsData && logsData.length > 0) {
+            logsData.forEach(log => {
+                if (log.action_type === 'IN') totalIn++;
+                if (log.action_type === 'OUT') totalOut++;
+            });
+        }
+
+        // จัดกลุ่มประเภทยานพาหนะจากฐานข้อมูลหลัก (checkpoints)
+        if (cpData && cpData.length > 0) {
+            cpData.forEach(item => {
+                const brand = item.brand || item.vehicle_type || 'ยานพาหนะทั่วไป';
+                vehicleTypeCounts[brand] = (vehicleTypeCounts[brand] || 0) + 1;
+            });
+        }
+
+        // แสดงผลตัวเลขจริงลงในกล่องสรุป
+        if (totalInEl) totalInEl.innerText = `${totalIn} คัน`;
+        if (totalOutEl) totalOutEl.innerText = `${totalOut} คัน`;
+        if (totalNetEl) totalNetEl.innerText = `${totalIn + totalOut} คัน`;
+
+        // สร้างตารางสรุปแยกตามประเภทยานพาหนะจากข้อมูลจริง
+        let tableHtml = '';
+        if (Object.keys(vehicleTypeCounts).length > 0) {
+            for (const [typeName, count] of Object.entries(vehicleTypeCounts)) {
+                tableHtml += `
+                    <tr>
+                        <td class="p-3 font-medium text-stone-200">${typeName}</td>
+                        <td class="p-3 text-center font-bold text-emerald-400">${count} คัน</td>
+                        <td class="p-3 text-stone-400">บันทึกสถิติจากฐานข้อมูลด่านนอแล</td>
+                    </tr>
+                `;
+            }
+        } else {
+            tableHtml = `<tr><td colspan="3" class="p-3 text-center text-stone-400">ยังไม่มีข้อมูลประเภทยานพาหนะในระบบ</td></tr>`;
+        }
+
+        if (typeTableBody) {
+            typeTableBody.innerHTML = tableHtml;
+        }
+
+    } catch (err) {
+        console.error('Error fetching shift summary:', err);
+        if (totalInEl) totalInEl.innerText = `0 คัน`;
+        if (totalOutEl) totalOutEl.innerText = `0 คัน`;
+        if (totalNetEl) totalNetEl.innerText = `0 คัน`;
+        if (typeTableBody) {
+            typeTableBody.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-rose-400">❌ เกิดข้อผิดพลาดในการดึงข้อมูลจากระบบ</td></tr>`;
+        }
+    }
 }
 
 // ฟังก์ชันปิด Modal
 function closeShiftSummaryModal() {
     const modal = document.getElementById('shiftModal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
 }
 // ค้นหาในหน้า Directory
 function searchDirectory(val) {
