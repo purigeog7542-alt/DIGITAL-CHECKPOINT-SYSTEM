@@ -307,6 +307,7 @@ async function fetchDirectoryFromSupabase() {
         grid.innerHTML = `<div class="col-span-3 text-center py-8 text-rose-400">เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}</div>`;
     }
 }
+
 // ==========================================
 // 📋 ฟังก์ชันเปิด Modal รายงานสรุปยอดกะ (ดึงข้อมูลจริงจาก Supabase)
 // ==========================================
@@ -409,6 +410,7 @@ function closeShiftSummaryModal() {
         modal.classList.add('hidden');
     }
 }
+
 // ค้นหาในหน้า Directory
 function searchDirectory(val) {
     currentSearchTerm = val.trim();
@@ -606,6 +608,7 @@ async function exportDirectoryToExcel() {
         alert(`❌ เกิดข้อผิดพลาดในการสร้างไฟล์ Excel: ${err.message}`);
     }
 }
+
 // Chart.js Initialization
 let chartsInitialized = false;
 function initCharts() {
@@ -620,7 +623,7 @@ function initCharts() {
                 labels: ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
                 datasets: [
                     { label: 'เข้า (IN)', data: [10, 42, 25, 34, 22, 47, 30, 12], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', tension: 0.4, fill: true },
-                    { label: 'ออก (OUT)', data: [5, 28, 30, 38, 20, 52, 58, 15], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.4, fill: `true` }
+                    { label: 'ออก (OUT)', data: [5, 28, 30, 38, 20, 52, 58, 15], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.4, fill: true }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }, y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } } } }
