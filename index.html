@@ -45,38 +45,38 @@
         body.mode-pc { font-size: 1rem; }
     </style>
 </head>
-<body id="app-body" class="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans mode-pc">
+<body id="app-body" class="min-h-screen flex flex-col bg-stone-950 text-stone-100 font-sans mode-pc">
 <!-- Top Header Bar -->
-<header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-wrap justify-between items-center shadow-md gap-4 no-print">
-    <div class="flex items-center gap-3">
-        <!-- เปลี่ยนโลโก้เป็นตราสัญลักษณ์ทหาร/กองร้อย (เปลี่ยน Emoji หรือใส่รูปภาพ <img src="..."> แทนได้) -->
-        <<div class="bg-emerald-500/10 p-1.5 rounded-2xl border border-emerald-500/30 flex items-center justify-center shadow-inner overflow-hidden w-16 h-16 shrink-0">
+<header class="bg-stone-900 border-b border-emerald-900/50 px-6 py-4 flex flex-wrap justify-between items-center shadow-lg gap-4 no-print">
+    <div class="flex items-center gap-4">
+        <!-- 🖼️ โลโก้หน่วย -->
+        <div class="bg-emerald-950/80 p-1.5 rounded-2xl border border-emerald-600/40 flex items-center justify-center shadow-inner overflow-hidden w-16 h-16 shrink-0">
             <img src="Picture2.png" alt="โลโก้หน่วย" class="w-full h-full object-contain">
         </div>
         <div>
-            <div class="flex items-center gap-2">
-                <!-- เปลี่ยนข้อความหัวข้อหลัก -->
-                <h1 class="text-xl font-bold tracking-wide text-slate-100">ระบบด่านฐานปฏิบัติการบ้านนอแล</h1>
-                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30 font-semibold">v2.5 (Nor Lae)</span>
+            <div class="flex items-center gap-2 flex-wrap">
+                <!-- ชื่อหัวข้อหลัก -->
+                <h1 class="text-2xl font-bold tracking-wide text-stone-100 uppercase">ระบบรถเข้า-ออก นอแล 2026</h1>
+                <span class="bg-emerald-900/60 text-emerald-400 text-xs px-2.5 py-1 rounded-full border border-emerald-500/40 font-semibold tracking-wider">v2.5 (Tactical Mode)</span>
             </div>
-            <p class="text-sm text-slate-300 mt-0.5">ระบบบันทึกและติดตามยานพาหนะ-บุคคล พร้อมหลักฐานภาพถ่ายและประวัติเข้า-ออกสะสม</p>
+            <p class="text-sm text-stone-400 mt-1">ระบบบันทึกและติดตามยานพาหนะ-บุคคล พร้อมหลักฐานภาพถ่ายและประวัติเข้า-ออกสะสม</p>
         </div>
     </div>
 
     <!-- ส่วนขวา: ป้ายด่านนอแล และ ปุ่มเลือกโหมดอุปกรณ์ -->
     <div class="flex items-center gap-3 flex-wrap">
-        <div class="bg-slate-800 px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-2 shadow-inner">
-            <span class="text-rose-400 text-base">📍</span>
-            <span class="text-slate-100 font-bold text-sm tracking-wide">ด่านนอแล</span>
+        <div class="bg-stone-800/80 px-4 py-2 rounded-xl border border-stone-700 flex items-center gap-2 shadow-inner">
+            <span class="text-amber-500 text-base">📍</span>
+            <span class="text-stone-200 font-bold text-sm tracking-wide">ด่านนอแล</span>
         </div>
 
-        <div id="mode-btn-group" class="bg-slate-900 border border-slate-700 p-1 rounded-xl flex items-center gap-1 shadow-inner">
-            <button onclick="setScreenMode('mobile')" id="mode-btn-mobile" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">📱 มือถือ</button>
-            <button onclick="setScreenMode('tablet')" id="mode-btn-tablet" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">📱 ไอแพด</button>
-            <button onclick="setScreenMode('pc')" id="mode-btn-pc" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow transition">💻 คอม</button>
+        <div id="mode-btn-group" class="bg-stone-900 border border-stone-700 p-1 rounded-xl flex items-center gap-1 shadow-inner">
+            <button onclick="setScreenMode('mobile')" id="mode-btn-mobile" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-400 hover:text-white transition">📱 มือถือ</button>
+            <button onclick="setScreenMode('tablet')" id="mode-btn-tablet" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-400 hover:text-white transition">📱 ไอแพด</button>
+            <button onclick="setScreenMode('pc')" id="mode-btn-pc" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-700 text-white shadow transition">💻 คอม</button>
         </div>
 
-        <div id="live-clock" class="bg-slate-800 px-4 py-2 rounded-xl border border-slate-700 text-emerald-400 font-mono text-sm font-semibold shadow-inner">
+        <div id="live-clock" class="bg-stone-900 px-4 py-2 rounded-xl border border-emerald-600/50 text-amber-400 font-mono text-sm font-bold shadow-inner tracking-wider">
             --/--/---- --:--:--
         </div>
     </div>
