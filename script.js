@@ -307,7 +307,55 @@ async function fetchDirectoryFromSupabase() {
         grid.innerHTML = `<div class="col-span-3 text-center py-8 text-rose-400">เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}</div>`;
     }
 }
+// ฟังก์ชันเปิด Modal รายงานสรุปยอดกะ
+function openShiftSummaryModal() {
+    const modal = document.getElementById('shiftModal');
+    if (!modal) return;
 
+    // 1. อัปเดตวันที่และเวลาปัจจุบัน
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+    const timeStr = now.toLocaleTimeString('th-TH');
+    document.getElementById('report-date-time').innerText = `วันที่พิมพ์รายงาน: ${dateStr} เวลา ${timeStr} น.`;
+
+    // 2. ดึงข้อมูลยานพาหนะจากระบบ (สมมติว่าใช้ตัวแปรเก็บข้อมูล หรือดึงจากตารางหน้าเว็บ)
+    // หากระบบของคุณเก็บข้อมูลไว้ในตัวแปรอาเรย์ เช่น allVehicles หรือ logs ให้เรียกใช้ได้เลยครับ
+    let totalIn = 15;  // ตัวอย่างจำลอง สามารถปรับเชื่อมตัวแปรจริงได้
+    let totalOut = 12;
+
+    document.getElementById('summary-total-in').innerText = `${totalIn} คัน`;
+    document.getElementById('summary-total-out').innerText = `${totalOut} คัน`;
+    document.getElementById('summary-total-net').innerText = `${totalIn + totalOut} คัน`;
+
+    // 3. จำลองข้อมูลแยกตามประเภทยานพาหนะ (สามารถเชื่อมโยงกับอาเรย์ข้อมูลจริงในระบบ)
+    const typeTableBody = document.getElementById('summary-type-table-body');
+    typeTableBody.innerHTML = `
+        <tr>
+            <td class="p-3 font-medium">รถจักรยานยนต์ (Honda / Yamaha)</td>
+            <td class="p-3 text-center font-bold text-emerald-400">14 คัน</td>
+            <td class="p-3 text-stone-400">ใช้งานในพื้นที่เกษตร/ราษฎรท้องถิ่น</td>
+        </tr>
+        <tr>
+            <td class="p-3 font-medium">รถยนต์กระบะ (Ford / Toyota / Isuzu)</td>
+            <td class="p-3 text-center font-bold text-amber-400">10 คัน</td>
+            <td class="p-3 text-stone-400">ขนส่งผลผลิตทางการเกษตรและเสบียง</td>
+        </tr>
+        <tr>
+            <td class="p-3 font-medium">รถบรรทุกขนาดเล็ก / อื่นๆ</td>
+            <td class="p-3 text-center font-bold text-sky-400">3 คัน</td>
+            <td class="p-3 text-stone-400">ปฏิบัติกิจธุระราชการ / หน่วยเฉพาะกิจ</td>
+        </tr>
+    `;
+
+    // แสดง Modal
+    modal.classList.remove('hidden');
+}
+
+// ฟังก์ชันปิด Modal
+function closeShiftSummaryModal() {
+    const modal = document.getElementById('shiftModal');
+    if (modal) modal.classList.add('hidden');
+}
 // ค้นหาในหน้า Directory
 function searchDirectory(val) {
     currentSearchTerm = val.trim();
