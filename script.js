@@ -2,7 +2,17 @@
 const SUPABASE_URL = 'https://wtyvtjvzvgurybtcnnsf.supabase.co'; 
 const SUPABASE_ANON_KEY = 'sb_publishable_JLPzS9fSB0-mJN9D3Vssiw_ibQEXq4d'; 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+// --- ตรวจสอบสิทธิ์การเข้าใช้งานหน้าหลัก ---
+sb.auth.getSession().then(({ data: { session } }) => {
+    if (!session) {
+        // ถ้ายังไม่ได้ล็อกอิน ให้ดีดกลับไปหน้า login.html ทันที
+        window.location.href = 'login.html';
+    }
+});
+async function handleLogout() {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+}
 let directoryOffset = 0;
 const PAGE_LIMIT = 30;
 let currentSearchTerm = '';
