@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - ด่านฐานปฏิบัติการบ้านนอแล</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+    </style>
+</head>
+<body class="bg-stone-950 text-stone-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-stone-900 border border-stone-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6">
+        
+        <!-- Header / โลโก้หน่วย -->
+        <div class="text-center space-y-2">
+            <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl mx-auto flex items-center justify-center text-2xl">
+                🛡️
+            </div>
+            <h2 class="text-xl font-bold text-stone-100 uppercase tracking-wide">ระบบด่านตรวจความมั่นคง</h2>
+            <p class="text-xs text-stone-400">กองร้อยทหารม้าที่ ๓ หน่วยเฉพาะกิจไชยานุภาพ</p>
+        </div>
+
+        <!-- ฟอร์มเข้าสู่ระบบ -->
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-medium text-stone-300 mb-1">อีเมลเจ้าหน้าที่ (Email)</label>
+                <input type="email" id="login-email" required placeholder="nolae33@gmail.com" 
+                    class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2.5 text-sm text-stone-100 focus:outline-none focus:border-emerald-500 transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-stone-300 mb-1">รหัสผ่าน (Password)</label>
+                <input type="password" id="login-password" required placeholder="••••••••" 
+                    class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2.5 text-sm text-stone-100 focus:outline-none focus:border-emerald-500 transition">
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
+                <span>🔐</span> เข้าสู่ระบบปฏิบัติการ
+            </button>
+        </form>
+
+        <div class="text-center pt-2 border-t border-stone-800">
+            <p class="text-[10px] text-stone-500">ฐานปฏิบัติการบ้านนอแล • สำหรับเจ้าหน้าที่ผู้ปฏิบัติงานเท่านั้น</p>
+        </div>
+    </div>
+
+    <script>
+        // --- ตั้งค่าการเชื่อมต่อ Supabase ---
+        const SUPABASE_URL = 'https://wtyvtjvzvgurybtcnnsf.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'sb_publishable_JLPzS9fSB0-mJN9D3Vssiw_ibQEXq4d'; 
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ตรวจสอบว่าถ้าเคยล็อกอินอยู่แล้ว ให้ข้ามไปหน้า index.html ทันที
+        sb.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // จัดการฟอร์ม Login
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            try {
+                const { data, error } = await sb.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) throw error;
+
+                if (data.session) {
+                    alert('✅ ยินดีต้อนรับเข้าสู่ระบบปฏิบัติการ ด่านนอแล');
+                    window.location.href = 'index.html'; // พาไปหน้าหลัก
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                alert('❌ เข้าสู่ระบบไม่สำเร็จ: อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+            }
+        });
+    </script>
+</body>
+</html>
