@@ -49,12 +49,12 @@ function switchTab(tabId) {
 
     if (tabId === 'analytics') {
         loadDashboardStats();
-        setTimeout(initCharts, 100);
     } else if (tabId === 'daily-logs') {
         loadDailyLogs();
     } else if (tabId === 'directory') {
         directoryOffset = 0;
-        document.getElementById('vehicle-directory-grid').innerHTML = '';
+        const grid = document.getElementById('vehicle-directory-grid');
+        if (grid) grid.innerHTML = '';
         fetchDirectoryFromSupabase();
     }
 }
@@ -198,6 +198,7 @@ async function handleRecordAction(id, actionType, name = '', plate = '') {
 
         alert(`✅ บันทึกสถานะ ${actionType} สำเร็จ!`);
         loadDailyLogs();
+        loadDashboardStats();
 
     } catch (err) {
         console.error(err);
@@ -362,12 +363,138 @@ async function deleteLogEntry(logId) {
         if (error) throw error;
 
         alert('✅ ลบประวัติเรียบร้อยแล้ว');
-        loadDailyLogs(); // โหลดข้อมูลตารางใหม่ทันที
-        loadDashboardStats(); // อัปเดตสถิติตัวเลขในแดชบอร์ด
+        loadDailyLogs(); 
+        loadDashboardStats(); 
     } catch (err) {
         console.error('Delete log error:', err);
         alert(`❌ ไม่สามารถลบข้อมูลได้: ${err.message}`);
     }
+}
+
+// 📄 คำนวณและแสดง Modal รายงานสรุปกะ
+async function openShiftSummaryModal() {
+    const modal = document.getElementById('shiftModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+
+    const dtEl = document.getElementById('report-date-time');
+    if (dtEl) dtEl.innerText = `วันที่พิมพ์รายงาน: ${new Date().toLocaleString('th-TH')}`;
+
+    try {
+        const { data: logs } = await sb.from('checkpoint_logs').select('*');
+        if (!logs) return;
+
+        let totalIn = 0, totalOut = 0;
+        const brandCounts = {};
+
+        logs.forEach(l => {
+            if (l.action_type === 'IN') totalIn++;
+            if (l.action_type === 'OUT') totalOut++;
+
+            const brand = l.license_plate ? l.license_plate.split(' ')[0] : 'อื่นๆ';
+            brandCounts[brand] = (brandCounts[brand] || 0) + 1;
+        });
+
+        const inEl = document.getElementById('summary-total-in');
+        const outEl = document.getElementById('summary-total-out');
+        const netEl = document.getElementById('summary-total-net');
+
+        if (inEl) inEl.innerText = `${totalIn} คัน`;
+        if (outEl) outEl.innerText = `${totalOut} คัน`;
+        if (netEl) netEl.innerText = `${totalIn + totalOut} คัน`;
+
+        const summaryTbody = document.getElementById('summary-type-table-body');
+        if (summaryTbody) {
+            summaryTbody.innerHTML = Object.keys(brandCounts).map(b => `
+                <tr>
+                    <td class="p-3 font-semibold text-stone-200">${b}</td>
+                    <td class="p-3 text-center text-emerald-400 font-bold">${brandCounts[b]}</td>
+                    <td class="p-3 text-stone-400">สัญจรผ่านจุดตรวจ</td>
+                </tr>
+            `).join('');
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function closeShiftSummaryModal() {
+    const modal = document.getElementById('shiftModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+// 🖨️ ฟังก์ชันพิมพ์รายงานสรุปกะ
+function printShiftSummary() {
+    document.body.classList.add('print-shift-mode');
+    window.print();
+    setTimeout(() => {
+        document.body.classList.remove('print-shift-mode');
+    }, 500);
+}
+
+// พิมพ์หน้าทั่วไป
+function printPage() {
+    document.body.classList.remove('print-shift-mode');
+    window.print();
+}
+
+// เปิด Popup รายละเอียดรายบุคคล (ถ้ามี Modal)
+async function openDetailModal(id) {
+    const modal = document.getElementById('detail-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+
+    try {
+        const { data } = await sb.from('checkpoints').select('*').eq('id', id).single();
+        if (!data) return;
+
+        document.getElementById('modal-seq').innerText = `#${data.id}`;
+        document.getElementById('modal-name').innerText = data.full_name || '-';
+        document.getElementById('modal-vehicle').innerText = `ชนิดรถ: ${data.brand || '-'} | ทะเบียน: ${data.license_plate || '-'}`;
+
+        const idImg = document.getElementById('modal-id-card-img');
+        const idPh = document.getElementById('modal-id-card-placeholder');
+        if (data.id_card_url) {
+            idImg.src = data.id_card_url;
+            idImg.classList.remove('hidden');
+            idPh.classList.add('hidden');
+        } else {
+            idImg.classList.add('hidden');
+            idPh.classList.remove('hidden');
+        }
+
+        const vImg = document.getElementById('modal-vehicle-img');
+        const vPh = document.getElementById('modal-vehicle-placeholder');
+        if (data.vehicle_photo_url) {
+            vImg.src = data.vehicle_photo_url;
+            vImg.classList.remove('hidden');
+            vPh.classList.add('hidden');
+        } else {
+            vImg.classList.add('hidden');
+            vPh.classList.remove('hidden');
+        }
+
+        // โหลดประวัติ Logs เฉพาะบุคคลนี้
+        const { data: logs } = await sb.from('checkpoint_logs').select('*').eq('checkpoint_id', id).order('created_at', { ascending: false });
+        const tBody = document.getElementById('modal-timestamp-logs');
+        if (tBody) {
+            tBody.innerHTML = logs && logs.length > 0 ? logs.map(l => `
+                <tr>
+                    <td class="px-5 py-3 font-mono text-xs">${new Date(l.created_at).toLocaleString('th-TH')}</td>
+                    <td class="px-5 py-3"><span class="${l.action_type === 'IN' ? 'text-emerald-400' : 'text-rose-400'} font-bold">${l.action_type}</span></td>
+                    <td class="px-5 py-3 text-slate-400">${l.gate_name || 'ด่านนอแล'}</td>
+                </tr>
+            `).join('') : `<tr><td colspan="3" class="px-5 py-4 text-center text-slate-500">ยังไม่มีประวัติการผ่านด่าน</td></tr>`;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('detail-modal');
+    if (modal) modal.classList.add('hidden');
 }
 
 async function fetchDirectoryFromSupabase() {
