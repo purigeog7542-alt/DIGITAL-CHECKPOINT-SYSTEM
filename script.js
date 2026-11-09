@@ -341,7 +341,7 @@ async function loadDailyLogs() {
                 <td class="px-6 py-4">${log.license_plate || '-'}</td>
                 <td class="px-6 py-4 font-medium">${log.full_name || '-'}</td>
                 <td class="px-6 py-4 text-xs text-slate-400">${log.gate_name || 'ด่านนอแล'}</td>
-                <td class="px-6 py-4 text-center">
+                <td class="px-6 py-4 text-center action-col">
                     <button onclick="deleteLogEntry(${log.id})" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-rose-500/30 flex items-center gap-1 mx-auto">
                         <span>🗑️</span> ลบ
                     </button>
