@@ -268,7 +268,7 @@
 
 </main>
 
-<!-- ➕ MODAL ลงทะเบียนรายชื่อ / ยานพาหนะใหม่ -->
+<!-- ➕ MODAL ลงทะเบียนรายชื่อ / ยานพาหนะใหม่ (พร้อมช่องอัปโหลดรูปภาพ) -->
 <div id="add-person-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-stone-900 border border-stone-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
         <div class="bg-stone-950 px-6 py-4 border-b border-stone-800 flex justify-between items-center">
@@ -276,7 +276,7 @@
             <button onclick="closeAddPersonModal()" class="text-stone-400 hover:text-white text-xl">✕</button>
         </div>
         
-        <form id="add-person-form" onsubmit="handleAddNewPerson(event)" class="p-6 space-y-4">
+        <form id="add-person-form" onsubmit="handleAddNewPerson(event)" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
             <div>
                 <label class="block text-xs font-semibold text-stone-300 mb-1">ชื่อ - นามสกุล <span class="text-rose-500">*</span></label>
                 <input type="text" id="new-fullname" required placeholder="นายสมชาย ใจดี" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-sm text-stone-100 focus:border-emerald-500 outline-none">
@@ -301,6 +301,19 @@
                 <div>
                     <label class="block text-xs font-semibold text-stone-300 mb-1">หมายเหตุ / พื้นที่</label>
                     <input type="text" id="new-remarks" placeholder="ด่านนอแล" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-sm text-stone-100 focus:border-emerald-500 outline-none">
+                </div>
+            </div>
+
+            <!-- 📸 ช่องบันทึกภาพถ่ายหลักฐาน (รูปบัตรประชาชน & รูปรถ) -->
+            <div class="bg-stone-950 p-4 rounded-xl border border-stone-800 space-y-3">
+                <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📸 หลักฐานภาพถ่าย (ถ้ามี)</h4>
+                <div>
+                    <label class="block text-xs font-medium text-stone-300 mb-1">ภาพถ่ายบัตรประจำตัวประชาชน</label>
+                    <input type="file" id="new-id-card-capture" accept="image/*" capture="environment" class="block w-full text-xs text-stone-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-emerald-600 file:text-white cursor-pointer">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-stone-300 mb-1">ภาพถ่ายยานพาหนะ / ป้ายทะเบียน</label>
+                    <input type="file" id="new-vehicle-capture" accept="image/*" capture="environment" class="block w-full text-xs text-stone-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-600 file:text-white cursor-pointer">
                 </div>
             </div>
 
