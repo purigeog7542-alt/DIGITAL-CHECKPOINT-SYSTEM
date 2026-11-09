@@ -232,10 +232,11 @@
                             <th class="px-6 py-4">ทะเบียน / ชนิดรถ</th>
                             <th class="px-6 py-4">ชื่อ-นามสกุล ผู้ขับขี่</th>
                             <th class="px-6 py-4">จุดตรวจ (GATE)</th>
+                            <th class="px-6 py-4 text-center">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody id="logs-table-body" class="divide-y divide-slate-800 text-slate-200">
-                        <tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">ยังไม่มีประวัติการบันทึกในระบบ</td></tr>
+                        <tr><td colspan="7" class="px-6 py-6 text-center text-slate-400">ยังไม่มีประวัติการบันทึกในระบบ</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -268,7 +269,7 @@
 
 </main>
 
-<!-- ➕ MODAL ลงทะเบียนรายชื่อ / ยานพาหนะใหม่ (พร้อมช่องอัปโหลดรูปภาพ) -->
+<!-- ➕ MODAL ลงทะเบียนรายชื่อ / ยานพาหนะใหม่ -->
 <div id="add-person-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-stone-900 border border-stone-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
         <div class="bg-stone-950 px-6 py-4 border-b border-stone-800 flex justify-between items-center">
@@ -304,7 +305,6 @@
                 </div>
             </div>
 
-            <!-- 📸 ช่องบันทึกภาพถ่ายหลักฐาน (รูปบัตรประชาชน & รูปรถ) -->
             <div class="bg-stone-950 p-4 rounded-xl border border-stone-800 space-y-3">
                 <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📸 หลักฐานภาพถ่าย (ถ้ามี)</h4>
                 <div>
@@ -322,134 +322,6 @@
                 <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 rounded-xl text-sm shadow">บันทึกข้อมูล</button>
             </div>
         </form>
-    </div>
-</div>
-
-<!-- 📌 POPUP MODAL รายละเอียดและประวัติรายบุคคล -->
-<div id="detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-            <div>
-                <div class="flex items-center gap-2">
-                    <span id="modal-seq" class="text-emerald-400 font-bold text-xl">#0</span>
-                    <h3 id="modal-name" class="font-bold text-slate-100 text-xl">ชื่อ-นามสกุล</h3>
-                </div>
-                <p id="modal-vehicle" class="text-sm text-slate-300 mt-1">รายละเอียดรถ</p>
-            </div>
-            <button onclick="closeModal()" class="text-slate-300 hover:text-white bg-slate-800 p-2.5 rounded-xl transition hover:bg-slate-700 text-base">✖️</button>
-        </div>
-
-        <div class="p-6 overflow-y-auto space-y-6 flex-1 text-base">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center">
-                    <span class="text-sm text-slate-300 mb-2 font-medium">🪪 ภาพถ่ายบัตรประจำตัวประชาชน</span>
-                    <div class="w-full h-52 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center border border-slate-800">
-                        <img id="modal-id-card-img" src="" class="object-cover w-full h-full hidden" alt="ภาพถ่ายบัตร">
-                        <div id="modal-id-card-placeholder" class="text-slate-400 text-sm text-center p-4">🖼️ ไม่มีภาพถ่ายบัตร</div>
-                    </div>
-                </div>
-                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center">
-                    <span class="text-sm text-slate-300 mb-2 font-medium">🚘 ภาพถ่ายยานพาหนะ</span>
-                    <div class="w-full h-52 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center border border-slate-800">
-                        <img id="modal-vehicle-img" src="" class="object-cover w-full h-full hidden" alt="ภาพถ่ายรถ">
-                        <div id="modal-vehicle-placeholder" class="text-slate-400 text-sm text-center p-4">🖼️ ไม่มีภาพถ่ายรถ</div>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3">⏱️ ประวัติ Timestamp สัญจรสะสม</h4>
-                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden max-h-60 overflow-y-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-900 text-slate-300 uppercase sticky top-0 border-b border-slate-800">
-                            <tr>
-                                <th class="px-5 py-3">วัน-เวลา TIMESTAMP</th>
-                                <th class="px-5 py-3">การปฏิบัติ</th>
-                                <th class="px-5 py-3">จุดตรวจ GATE</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modal-timestamp-logs" class="divide-y divide-slate-800 text-slate-200"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-5 border-t border-slate-800 bg-slate-900/50 flex justify-between items-center">
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition">🖨️ พิมพ์ใบประวัติ / PDF</button>
-            <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-6 py-2.5 rounded-xl text-sm font-bold transition">ปิดหน้าต่าง</button>
-        </div>
-    </div>
-</div>
-
-<!-- 📊 ปุ่มเปิดรายงานสรุปยอดกะ -->
-<div class="flex justify-center my-6 no-print">
-    <button onclick="openShiftSummaryModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg transition border border-amber-500/50">
-        <span>📄</span> พิมพ์รายงานสรุปยอดกะ (Shift Summary)
-    </button>
-</div>
-
-<!-- Modal สำหรับรายงานสรุปยอดกะ -->
-<div id="shiftModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-stone-900 border border-stone-700 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div class="bg-stone-800 px-6 py-4 border-b border-stone-700 flex justify-between items-center no-print">
-            <h3 class="text-lg font-bold text-stone-100 flex items-center gap-2"><span>📋</span> รายงานสรุปยอดการผ่านด่านประจำวัน</h3>
-            <button onclick="closeShiftSummaryModal()" class="text-stone-400 hover:text-white text-xl font-bold">&times;</button>
-        </div>
-
-        <div id="printableArea" class="p-8 overflow-y-auto bg-stone-950 text-stone-200 font-sans space-y-6">
-            <div class="text-center border-b border-stone-800 pb-4">
-                <h2 class="text-xl font-bold uppercase tracking-wide text-stone-100">กองร้อยทหารม้าที่ ๓ หน่วยเฉพาะกิจไชยานุภาพ</h2>
-                <h3 class="text-base font-semibold text-emerald-400 mt-1">ฐานปฏิบัติการบ้านนอแล - บันทึกรายงานประจำวัน</h3>
-                <p id="report-date-time" class="text-xs text-stone-400 mt-2 font-mono">วันที่พิมพ์รายงาน: --/--/---- --:--</p>
-            </div>
-
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div class="bg-stone-900 p-4 rounded-xl border border-stone-800">
-                    <p class="text-xs text-stone-400">เข้าทั้งหมด</p>
-                    <p id="summary-total-in" class="text-2xl font-bold text-emerald-400 mt-1">0 คัน</p>
-                </div>
-                <div class="bg-stone-900 p-4 rounded-xl border border-stone-800">
-                    <p class="text-xs text-stone-400">ออกทั้งหมด</p>
-                    <p id="summary-total-out" class="text-2xl font-bold text-amber-400 mt-1">0 คัน</p>
-                </div>
-                <div class="bg-stone-900 p-4 rounded-xl border border-stone-800">
-                    <p class="text-xs text-stone-400">รวมสุทธิ</p>
-                    <p id="summary-total-net" class="text-2xl font-bold text-sky-400 mt-1">0 คัน</p>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="text-sm font-bold text-stone-300 mb-2 uppercase">📊 สรุปยอดแยกตามประเภทยานพาหนะ</h4>
-                <div class="border border-stone-800 rounded-xl overflow-hidden">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-stone-900 text-stone-400 border-b border-stone-800">
-                            <tr>
-                                <th class="p-3">ประเภทยานพาหนะ / ยี่ห้อ</th>
-                                <th class="p-3 text-center">จำนวน (คัน)</th>
-                                <th class="p-3">หมายเหตุ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="summary-type-table-body" class="divide-y divide-stone-800"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="pt-8 grid grid-cols-2 gap-8 text-center text-xs">
-                <div class="space-y-12">
-                    <p>ลงชื่อ............................................................เจ้าหน้าที่เวรด่าน</p>
-                    <p>(............................................................)</p>
-                </div>
-                <div class="space-y-12">
-                    <p>ลงชื่อ............................................................ผู้บังคับฐานปฏิบัติการ</p>
-                    <p>(............................................................)</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-stone-800 px-6 py-4 border-t border-stone-700 flex justify-end gap-3 no-print">
-            <button onclick="closeShiftSummaryModal()" class="px-4 py-2 rounded-xl bg-stone-700 text-stone-200 text-xs font-semibold">ปิดหน้าต่าง</button>
-            <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow">🖨️ พิมพ์ / PDF</button>
-        </div>
     </div>
 </div>
 
