@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="space-y-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
                             <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📸 บันทึกหลักฐานภาพถ่าย</h4>
                             <div>
-                                <label class="block text-xs font-medium text-slate-300 mb-1">ภาพถ่ายบัตรประชาชน</label>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">ภาพถ่ายบัตรประจำตัวประชาชน</label>
                                 <input type="file" id="id-card-capture" accept="image/*" capture="environment" class="block w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-emerald-600 file:text-white cursor-pointer">
                             </div>
                             <div>
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDailyLogs();
 });
 
-// ฟังก์ชันบันทึกข้อมูลเข้า-ออก
+// ฟังก์ชันบันทึกข้อมูลเข้า-ออก พร้อมอัปโหลดรูป
 async function handleRecordAction(id, actionType, name = '', plate = '') {
     const idCardInput = document.getElementById('id-card-capture');
     const vehicleInput = document.getElementById('vehicle-capture');
@@ -205,7 +205,7 @@ async function handleRecordAction(id, actionType, name = '', plate = '') {
     }
 }
 
-// ➕ ระบบลงทะเบียนรายชื่อใหม่
+// ➕ ระบบเปิด-ปิด Modal ลงทะเบียนรายชื่อใหม่
 function openAddPersonModal() {
     const modal = document.getElementById('add-person-modal');
     if (modal) modal.classList.remove('hidden');
@@ -216,6 +216,7 @@ function closeAddPersonModal() {
     if (modal) modal.classList.add('hidden');
 }
 
+// ➕ ระบบบันทึกรายชื่อใหม่ พร้อมอัปโหลดรูปภาพบัตรประชาชนและรูปรถ
 async function handleAddNewPerson(e) {
     e.preventDefault();
     const fullName = document.getElementById('new-fullname').value.trim();
@@ -223,6 +224,9 @@ async function handleAddNewPerson(e) {
     const brand = document.getElementById('new-brand').value.trim();
     const color = document.getElementById('new-color').value.trim();
     const remarks = document.getElementById('new-remarks').value.trim() || 'ด่านนอแล';
+    
+    const idCardInput = document.getElementById('new-id-card-capture');
+    const vehicleInput = document.getElementById('new-vehicle-capture');
 
     if (!fullName || !plate) {
         alert('กรุณากรอกชื่อ-นามสกุล และทะเบียนรถให้ครบถ้วน');
@@ -230,23 +234,58 @@ async function handleAddNewPerson(e) {
     }
 
     try {
-        const { error } = await sb.from('checkpoints').insert([{
+        let idCardUrl = null;
+        let vehicleUrl = null;
+
+        // อัปโหลดรูปบัตรประชาชน (ถ้ามีเลือกไฟล์)
+        if (idCardInput && idCardInput.files.length > 0) {
+            const file = idCardInput.files[0];
+            const filePath = `id_cards/${Date.now()}_${file.name}`;
+            const { error: uploadError } = await sb.storage.from('checkpoint-images').upload(filePath, file);
+            if (!uploadError) {
+                idCardUrl = sb.storage.from('checkpoint-images').getPublicUrl(filePath).data.publicUrl;
+            }
+        }
+
+        // อัปโหลดรูปรถ (ถ้ามีเลือกไฟล์)
+        if (vehicleInput && vehicleInput.files.length > 0) {
+            const file = vehicleInput.files[0];
+            const filePath = `vehicles/${Date.now()}_${file.name}`;
+            const { error: uploadError } = await sb.storage.from('checkpoint-images').upload(filePath, file);
+            if (!uploadError) {
+                vehicleUrl = sb.storage.from('checkpoint-images').getPublicUrl(filePath).data.publicUrl;
+            }
+        }
+
+        const nowIso = new Date().toISOString();
+
+        const insertPayload = {
             full_name: fullName,
             license_plate: plate,
             brand: brand || 'รถยนต์/จยย.',
             vehicle_type: brand || 'รถยนต์/จยย.',
             color: color || '-',
             remarks: remarks,
-            status: 'OUT'
-        }]);
+            status: 'OUT',
+            last_timestamp: nowIso
+        };
 
+        if (idCardUrl) insertPayload.id_card_url = idCardUrl;
+        if (vehicleUrl) insertPayload.vehicle_photo_url = vehicleUrl;
+
+        const { data, error } = await sb.from('checkpoints').insert([insertPayload]).select();
         if (error) throw error;
 
         alert(`✅ ลงทะเบียน "${fullName}" สำเร็จ!`);
         closeAddPersonModal();
         document.getElementById('add-person-form').reset();
         fetchDirectoryFromSupabase();
-        quickSearch(plate);
+        
+        if (data && data.length > 0) {
+            quickSearch(data[0].id);
+        } else {
+            quickSearch(plate);
+        }
     } catch (err) {
         console.error(err);
         alert(`❌ เพิ่มข้อมูลไม่สำเร็จ: ${err.message}`);
@@ -346,11 +385,64 @@ async function fetchDirectoryFromSupabase() {
     }
 }
 
+// 📌 เปิด Pop-up แสดงรายละเอียด รูปถ่าย และประวัติ Timestamp รายบุคคล
 async function openDetailModal(id) {
     const modal = document.getElementById('detail-modal');
     if (!modal) return;
     modal.classList.remove('hidden');
-    // โหลดรายละเอียดต่องาน
+
+    try {
+        // ดึงข้อมูลบุคคลจากตาราง checkpoints
+        const { data: record, error } = await sb.from('checkpoints').select('*').eq('id', id).single();
+        if (error || !record) throw error || new Error('ไม่พบข้อมูล');
+
+        document.getElementById('modal-seq').innerText = `#${record.id}`;
+        document.getElementById('modal-name').innerText = record.full_name || 'ไม่ระบุชื่อ';
+        document.getElementById('modal-vehicle').innerText = `${record.brand || 'รถ'} - ทะเบียน: ${record.license_plate || '-'} (สี${record.color || '-'})`;
+
+        // จัดการรูปภาพบัตรประชาชน
+        const idCardImg = document.getElementById('modal-id-card-img');
+        const idCardPlaceholder = document.getElementById('modal-id-card-placeholder');
+        if (record.id_card_url) {
+            idCardImg.src = record.id_card_url;
+            idCardImg.classList.remove('hidden');
+            if (idCardPlaceholder) idCardPlaceholder.classList.add('hidden');
+        } else {
+            idCardImg.classList.add('hidden');
+            if (idCardPlaceholder) idCardPlaceholder.classList.remove('hidden');
+        }
+
+        // จัดการรูปภาพยานพาหนะ
+        const vehicleImg = document.getElementById('modal-vehicle-img');
+        const vehiclePlaceholder = document.getElementById('modal-vehicle-placeholder');
+        if (record.vehicle_photo_url) {
+            vehicleImg.src = record.vehicle_photo_url;
+            vehicleImg.classList.remove('hidden');
+            if (vehiclePlaceholder) vehiclePlaceholder.classList.add('hidden');
+        } else {
+            vehicleImg.classList.add('hidden');
+            if (vehiclePlaceholder) vehiclePlaceholder.classList.remove('hidden');
+        }
+
+        // ดึงประวัติ Timestamp จากตาราง checkpoint_logs
+        const { data: logs } = await sb.from('checkpoint_logs').select('*').eq('checkpoint_id', id).order('created_at', { ascending: false });
+        const logTbody = document.getElementById('modal-timestamp-logs');
+        
+        if (!logs || logs.length === 0) {
+            logTbody.innerHTML = `<tr><td colspan="3" class="px-5 py-4 text-center text-slate-400">ยังไม่มีประวัติการผ่านด่าน</td></tr>`;
+        } else {
+            logTbody.innerHTML = logs.map(l => `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="px-5 py-3 font-mono text-xs text-slate-300">${new Date(l.created_at).toLocaleString('th-TH')}</td>
+                    <td class="px-5 py-3 font-bold ${l.action_type === 'IN' ? 'text-emerald-400' : 'text-rose-400'}">${l.action_type}</td>
+                    <td class="px-5 py-3 text-slate-400">${l.gate_name || 'ด่านนอแล'}</td>
+                </tr>
+            `).join('');
+        }
+
+    } catch (err) {
+        console.error('Modal detail error:', err);
+    }
 }
 
 function closeModal() {
