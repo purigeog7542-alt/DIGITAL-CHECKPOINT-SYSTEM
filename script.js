@@ -343,7 +343,7 @@ async function loadDailyLogs() {
                 <td class="px-6 py-4 font-medium">${log.full_name || '-'}</td>
                 <td class="px-6 py-4 text-xs text-slate-400">${log.gate_name || 'ด่านนอแล'}</td>
                 <td class="px-6 py-4 text-center action-col">
-                    <button onclick="deleteLogEntry(${log.id})" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-rose-500/30 flex items-center gap-1 mx-auto">
+                    <button onclick="window.deleteLogEntry(${log.id})" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-rose-500/30 flex items-center gap-1 mx-auto">
                         <span>🗑️</span> ลบ
                     </button>
                 </td>
@@ -354,8 +354,8 @@ async function loadDailyLogs() {
     }
 }
 
-// 🗑️ ฟังก์ชันลบประวัติการผ่านด่านรายรายการ
-async function deleteLogEntry(logId) {
+// 🗑️ ฟังก์ชันลบประวัติการผ่านด่าน (ผูกกับ window เพื่อให้ HTML เรียกใช้งานได้แน่นอน 100%)
+window.deleteLogEntry = async function(logId) {
     if (!confirm('⚠️ คุณต้องการลบประวัติการผ่านด่านรายการนี้ใช่หรือไม่?')) return;
 
     try {
@@ -369,10 +369,10 @@ async function deleteLogEntry(logId) {
         console.error('Delete log error:', err);
         alert(`❌ ไม่สามารถลบข้อมูลได้: ${err.message}`);
     }
-}
+};
 
 // 📄 คำนวณและแสดง Modal รายงานสรุปกะ
-async function openShiftSummaryModal() {
+window.openShiftSummaryModal = async function() {
     const modal = document.getElementById('shiftModal');
     if (!modal) return;
     modal.classList.remove('hidden');
@@ -417,30 +417,24 @@ async function openShiftSummaryModal() {
     } catch (err) {
         console.error(err);
     }
-}
+};
 
-function closeShiftSummaryModal() {
+window.closeShiftSummaryModal = function() {
     const modal = document.getElementById('shiftModal');
     if (modal) modal.classList.add('hidden');
-}
+};
 
-// 🖨️ ฟังก์ชันพิมพ์รายงานสรุปกะ
-function printShiftSummary() {
-    document.body.classList.add('print-shift-mode');
+// 🖨️ ฟังก์ชันพิมพ์รายงานสรุปกะ (พิมพ์เฉพาะตัวตาราง modal)
+window.printShiftSummary = function() {
     window.print();
-    setTimeout(() => {
-        document.body.classList.remove('print-shift-mode');
-    }, 500);
-}
+};
 
-// พิมพ์หน้าทั่วไป
-function printPage() {
-    document.body.classList.remove('print-shift-mode');
+// 🖨️ ฟังก์ชันพิมพ์ตาราง Daily Logs (พิมพ์เฉพาะตาราง ไม่เกิดหน้าขาวเปล่า)
+window.printPage = function() {
     window.print();
-}
+};
 
-// เปิด Popup รายละเอียดรายบุคคล (ถ้ามี Modal)
-async function openDetailModal(id) {
+window.openDetailModal = async function(id) {
     const modal = document.getElementById('detail-modal');
     if (!modal) return;
     modal.classList.remove('hidden');
@@ -475,7 +469,6 @@ async function openDetailModal(id) {
             vPh.classList.remove('hidden');
         }
 
-        // โหลดประวัติ Logs เฉพาะบุคคลนี้
         const { data: logs } = await sb.from('checkpoint_logs').select('*').eq('checkpoint_id', id).order('created_at', { ascending: false });
         const tBody = document.getElementById('modal-timestamp-logs');
         if (tBody) {
@@ -490,12 +483,12 @@ async function openDetailModal(id) {
     } catch (err) {
         console.error(err);
     }
-}
+};
 
-function closeModal() {
+window.closeModal = function() {
     const modal = document.getElementById('detail-modal');
     if (modal) modal.classList.add('hidden');
-}
+};
 
 async function fetchDirectoryFromSupabase() {
     const grid = document.getElementById('vehicle-directory-grid');
