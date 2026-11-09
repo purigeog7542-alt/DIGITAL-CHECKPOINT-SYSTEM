@@ -16,18 +16,19 @@
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <style>
-        /* สไตล์สำหรับ Print / PDF */
+        /* สไตล์สำหรับ Print / PDF ที่ปรับปรุงแล้ว */
         @media print {
-            header, nav, #mode-btn-group, .no-print, button { display: none !important; }
-            body { background-color: #ffffff !important; color: #000000 !important; font-size: 12pt; }
+            header, nav, #mode-btn-group, .no-print, button, .action-col { display: none !important; }
+            body { background-color: #ffffff !important; color: #000000 !important; font-size: 14pt; }
             .tab-content { display: block !important; }
-            .bg-slate-900, .bg-slate-950, .bg-stone-900 { background-color: #ffffff !important; border: 1px solid #ccc !important; color: #000 !important; }
+            .bg-slate-900, .bg-slate-950, .bg-stone-900, .bg-stone-950 { background-color: #ffffff !important; border: none !important; color: #000 !important; box-shadow: none !important; }
             .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-stone-100, .text-stone-200, .text-stone-300 { color: #000000 !important; }
-            .text-emerald-400 { color: #047857 !important; }
+            .text-emerald-400, .text-emerald-500 { color: #047857 !important; }
             .text-blue-400 { color: #1d4ed8 !important; }
             .text-amber-400 { color: #b45309 !important; }
-            table { width: 100% !important; border-collapse: collapse !important; }
-            th, td { border: 1px solid #000 !important; padding: 6px 10px !important; color: #000 !important; }
+            table { width: 100% !important; border-collapse: collapse !important; margin-top: 20px; }
+            th, td { border: 1px solid #333 !important; padding: 8px 12px !important; color: #000 !important; font-size: 12pt !important; }
+            th { background-color: #f0f0f0 !important; }
         }
 
         /* ควบคุมการขยายขนาดตามโหมดอุปกรณ์ที่เลือก */
@@ -121,7 +122,6 @@
                     <p class="text-sm text-slate-300 mt-1">พิมพ์เลขลำดับ หรือทะเบียนรถเพื่อดึงข้อมูลหลักฐานและบันทึกภาพถ่าย</p>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap">
-                    <!-- ➕ ปุ่มเพิ่มลงทะเบียนรายชื่อใหม่ -->
                     <button onclick="openAddPersonModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-1.5">
                         ➕ ลงทะเบียนรายชื่อใหม่
                     </button>
@@ -145,9 +145,7 @@
             </form>
         </div>
 
-        <div id="search-result-container" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
-            <!-- Data injected dynamically -->
-        </div>
+        <div id="search-result-container" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl"></div>
     </section>
 
     <!-- TAB 2: Analytics & Realtime Dashboard -->
@@ -232,7 +230,7 @@
                             <th class="px-6 py-4">ทะเบียน / ชนิดรถ</th>
                             <th class="px-6 py-4">ชื่อ-นามสกุล ผู้ขับขี่</th>
                             <th class="px-6 py-4">จุดตรวจ (GATE)</th>
-                            <th class="px-6 py-4 text-center">จัดการ</th>
+                            <th class="px-6 py-4 text-center action-col">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody id="logs-table-body" class="divide-y divide-slate-800 text-slate-200">
