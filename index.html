@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- เปลี่ยนชื่อบนแท็บเบราว์เซอร์ -->
     <title>ระบบรถเข้า-ออก นอแล 2026</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -22,8 +21,8 @@
             header, nav, #mode-btn-group, .no-print, button { display: none !important; }
             body { background-color: #ffffff !important; color: #000000 !important; font-size: 12pt; }
             .tab-content { display: block !important; }
-            .bg-slate-900, .bg-slate-950 { background-color: #ffffff !important; border: 1px solid #ccc !important; color: #000 !important; }
-            .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400 { color: #000000 !important; }
+            .bg-slate-900, .bg-slate-950, .bg-stone-900 { background-color: #ffffff !important; border: 1px solid #ccc !important; color: #000 !important; }
+            .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400, .text-stone-100, .text-stone-200, .text-stone-300 { color: #000000 !important; }
             .text-emerald-400 { color: #047857 !important; }
             .text-blue-400 { color: #1d4ed8 !important; }
             .text-amber-400 { color: #b45309 !important; }
@@ -46,15 +45,16 @@
     </style>
 </head>
 <body id="app-body" class="min-h-screen flex flex-col bg-stone-950 text-stone-100 font-sans mode-pc">
+
 <!-- Top Header Bar -->
-<!-- Top Header Bar (Responsive Mobile Optimized) -->
 <header class="bg-stone-900 border-b border-emerald-900/50 px-4 py-3 shadow-lg no-print">
     <div class="flex flex-col items-center text-center gap-3">
         
         <!-- 🖼️ โลโก้หน่วย (กรอบสีน้ำเงินขอบทองสไตล์ทหารม้า) -->
-<div class="bg-blue-950/90 p-1.5 rounded-2xl border-2 border-amber-500/70 flex items-center justify-center shadow-lg overflow-hidden w-14 h-14 shrink-0 ring-2 ring-blue-600/30">
-    <img src="Picture2.png" alt="โลโก้หน่วย" class="w-full h-full object-contain">
-</div>
+        <div class="flex items-center justify-between w-full">
+            <div class="bg-blue-950/90 p-1.5 rounded-2xl border-2 border-amber-500/70 flex items-center justify-center shadow-lg overflow-hidden w-14 h-14 shrink-0 ring-2 ring-blue-600/30">
+                <img src="Picture2.png" alt="โลโก้หน่วย" class="w-full h-full object-contain">
+            </div>
 
             <!-- ป้ายสถานะด่านและนาฬิกาเล็กๆ มุมขวา -->
             <div class="flex flex-col items-end gap-1">
@@ -64,18 +64,17 @@
                 </div>
                 <span class="bg-emerald-900/60 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full border border-emerald-500/40 font-semibold">v2.5 (Tactical)</span>
             </div>
-        <!-- 🚪 ปุ่มออกจากระบบ (ย้ายมาไว้ข้างในกล่องเดียวกันเพื่อให้เรียงสวยๆ) -->
-    <button onclick="handleLogout()" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
-        <span>🚪</span> ออกจากระบบ
-    </button>
 
-</div>
+            <!-- 🚪 ปุ่มออกจากระบบ -->
+            <button onclick="handleLogout()" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
+                <span>🚪</span> ออกจากระบบ
+            </button>
         </div>
 
-        <!-- ชื่อหัวข้อหลัก (จัดให้อ่านง่ายเต็มตาบนมือถือ ไม่ตัดบรรทัดประหลาด) -->
+        <!-- ชื่อหัวข้อหลัก -->
         <div class="w-full px-1">
             <h1 class="text-lg font-bold tracking-wide text-stone-100 uppercase leading-snug">ระบบด่านฐานปฏิบัติการบ้านนอแล</h1>
-            <p class="text-xs text-stone-400 mt-1 leading-relaxed">ระบบบันทึกและติดตามยานพาหนะ-บุคคล พร้อมหลักฐานภาพถ่ายและประวัติเข้า-ออกสะสม</p>
+            <p class="text-xs text-stone-400 mt-1 leading-relaxed">กองร้อยทหารม้าที่ ๓ หน่วยเฉพาะกิจไชยานุภาพ • ระบบบันทึกและติดตามยานพาหนะ-บุคคล</p>
         </div>
 
         <!-- แถวล่าง: ปุ่มปรับโหมดอุปกรณ์ และ วันเวลาปัจจุบัน -->
@@ -94,362 +93,334 @@
     </div>
 </header>
 
-    <!-- Navigation Tabs -->
-    <nav class="bg-slate-900/80 border-b border-slate-800 px-6 flex gap-4 overflow-x-auto text-base py-1 no-print">
-        <button onclick="switchTab('quick-entry')" id="tab-btn-quick-entry" class="tab-btn py-3 px-5 font-semibold border-b-2 border-emerald-500 text-emerald-400 flex items-center gap-2 whitespace-nowrap transition">
-            🚗 ปฏิบัติงานหน้าด่าน (Quick Entry)
-        </button>
-        <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="tab-btn py-3 px-5 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
-            📊 สถิติ & Realtime Dashboard
-        </button>
-        <button onclick="switchTab('daily-logs')" id="tab-btn-daily-logs" class="tab-btn py-3 px-5 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
-            📋 ประวัติการผ่านด่านแยกรายวัน (Daily Logs)
-        </button>
-        <button onclick="switchTab('directory')" id="tab-btn-directory" class="tab-btn py-3 px-5 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
-            🗂️ ฐานข้อมูลยานพาหนะ
-        </button>
-    </nav>
+<!-- Navigation Tabs -->
+<nav class="bg-slate-900/80 border-b border-slate-800 px-6 flex gap-4 overflow-x-auto text-base py-1 no-print">
+    <button onclick="switchTab('quick-entry')" id="tab-btn-quick-entry" class="tab-btn py-3 px-5 font-semibold border-b-2 border-emerald-500 text-emerald-400 flex items-center gap-2 whitespace-nowrap transition">
+        🚗 ปฏิบัติงานหน้าด่าน (Quick Entry)
+    </button>
+    <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="tab-btn py-3 px-5 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
+        📊 สถิติ & Realtime Dashboard
+    </button>
+    <button onclick="switchTab('daily-logs')" id="tab-btn-daily-logs" class="tab-btn py-3 px-5 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
+        📋 ประวัติการผ่านด่านแยกรายวัน (Daily Logs)
+    </button>
+    <button onclick="switchTab('directory')" id="tab-btn-directory" class="tab-btn py-3 px-5 font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition">
+        🗂️ ฐานข้อมูลยานพาหนะ
+    </button>
+</nav>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+<!-- Main Content Area -->
+<main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
 
-        <!-- TAB 1: Quick Entry -->
-        <section id="tab-quick-entry" class="tab-content space-y-6">
-            <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-100">🔍 ค้นหาด่วนด้วยลำดับ / ทะเบียน / ชื่อบุคคล</h2>
-                        <p class="text-sm text-slate-300 mt-1">พิมพ์เลขลำดับ หรือทะเบียนรถเพื่อดึงข้อมูลหลักฐานและบันทึกภาพถ่าย</p>
-                    </div>
-                    <div class="flex gap-2 text-xs flex-wrap">
-                        <span class="text-slate-300 self-center text-sm">ตัวอย่างด่วน:</span>
-                        <button onclick="quickSearch('1')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-lg border border-slate-700 text-sm font-semibold transition">#1 (นายดุลยพล)</button>
-                        <button onclick="quickSearch('4')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-lg border border-slate-700 text-sm font-semibold transition">#4 (นายฮาน)</button>
-                        <button onclick="quickSearch('7')" class="bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1.5 rounded-lg border border-slate-700 text-sm font-semibold transition">#7 (สต.คำแดง)</button>
-                    </div>
-                </div>
-
-                <form id="search-form" class="flex gap-3">
-                    <div class="relative flex-1">
-                        <input type="text" id="search-input" placeholder="พิมพ์เลขลำดับ (เช่น 1, 10) ทะเบียนรถ หรือชื่อบุคคล..." 
-                            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-5 py-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xl font-medium shadow-inner">
-                    </div>
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-9 py-4 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-lg">
-                        🔍 ค้นหา
-                    </button>
-                </form>
-            </div>
-
-            <div id="search-result-container" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
-                <!-- Data injected dynamically -->
-            </div>
-        </section>
-
-        <!-- TAB 2: Analytics & Realtime Dashboard (มีปุ่ม พิมพ์ / ออกรายงาน PDF) -->
-        <section id="tab-analytics" class="tab-content hidden space-y-6">
-            <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg no-print">
-                <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                    📊 สรุปยอดสถิติการสัญจร
-                </h2>
-                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
-                    🖨️ พิมพ์รายงาน / พิมพ์เป็น PDF
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-emerald-500">
-                    <p class="text-sm text-slate-300 font-medium">รถที่คงค้างอยู่ในพื้นที่ปัจจุบัน</p>
-                    <div class="flex items-baseline justify-between mt-3">
-                        <h3 id="stat-current-in" class="text-4xl font-extrabold text-emerald-400">0 คัน</h3>
-                        <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded font-semibold">Realtime</span>
-                    </div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-blue-500">
-                    <p class="text-sm text-slate-300 font-medium">สรุปยอดสัญจร "ประจำวัน"</p>
-                    <div class="flex items-baseline justify-between mt-3">
-                        <h3 id="stat-daily-total" class="text-4xl font-extrabold text-blue-400">0 ครั้ง</h3>
-                        <span class="text-xs bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded font-semibold">Today Log</span>
-                    </div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-amber-500">
-                    <p class="text-sm text-slate-300 font-medium">สรุปยอดสัญจร "ประจำสัปดาห์"</p>
-                    <div class="flex items-baseline justify-between mt-3">
-                        <h3 id="stat-weekly-total" class="text-4xl font-extrabold text-amber-400">0 ครั้ง</h3>
-                        <span class="text-xs bg-amber-500/20 text-amber-400 px-2.5 py-1 rounded font-semibold">This Week</span>
-                    </div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-purple-500">
-                    <p class="text-sm text-slate-300 font-medium">สรุปยอดสัญจร "ประจำเดือน"</p>
-                    <div class="flex items-baseline justify-between mt-3">
-                        <h3 id="stat-monthly-total" class="text-4xl font-extrabold text-purple-400">0 ครั้ง</h3>
-                        <span class="text-xs bg-purple-500/20 text-purple-400 px-2.5 py-1 rounded font-semibold">This Month</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-base font-bold text-slate-100">📈 ปริมาณรถผ่านด่านแยกตามช่วงเวลา</h3>
-                        <span class="text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Live Real-time</span>
-                    </div>
-                    <div class="h-80">
-                        <canvas id="peakHoursChart"></canvas>
-                    </div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-base font-bold text-slate-100 mb-4">🍩 สัดส่วนประเภทยานพาหนะ</h3>
-                        <div class="h-64 relative flex items-center justify-center">
-                            <canvas id="vehicleDonutChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 3: Daily Logs (มีปุ่ม พิมพ์ / ออกรายงาน PDF) -->
-        <section id="tab-daily-logs" class="tab-content hidden space-y-6">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-wrap justify-between items-center gap-4">
+    <!-- TAB 1: Quick Entry -->
+    <section id="tab-quick-entry" class="tab-content space-y-6">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
                 <div>
-                    <h2 class="text-lg font-bold text-slate-100">📋 ประวัติการบันทึกเข้า-ออก (Daily Logs)</h2>
-                    <p class="text-sm text-slate-300">ระบบบันทึกประวัติการผ่านด่านประจำวัน</p>
-                </div>
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="bg-slate-950 border border-slate-700 px-4 py-2.5 rounded-xl text-sm flex items-center gap-2">
-                        <span>📅 เลือกวันที่:</span>
-                        <input type="date" id="log-date-filter" class="bg-transparent text-slate-200 outline-none cursor-pointer">
-                    </div>
-                    <input type="text" id="log-search-filter" placeholder="ค้นหาทะเบียน/ชื่อ..." class="bg-slate-950 border border-slate-700 px-4 py-2.5 rounded-xl text-sm text-slate-200 placeholder-slate-500 outline-none">
-                    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow flex items-center gap-1.5 no-print">
-                        🖨️ พิมพ์ / ออกรายงาน PDF
-                    </button>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-                <div class="overflow-x-auto">
-                    <table id="daily-logs-table" class="w-full text-left text-base">
-                        <thead class="bg-slate-950 text-slate-300 text-xs uppercase border-b border-slate-800">
-                            <tr>
-                                <th class="px-6 py-4">วันที่ / เวลา TIMESTAMP</th>
-                                <th class="px-6 py-4">ลำดับ</th>
-                                <th class="px-6 py-4">การปฏิบัติ</th>
-                                <th class="px-6 py-4">ทะเบียน / ชนิดรถ</th>
-                                <th class="px-6 py-4">ชื่อ-นามสกุล ผู้ขับขี่</th>
-                                <th class="px-6 py-4">จุดตรวจ (GATE)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logs-table-body" class="divide-y divide-slate-800 text-slate-200">
-                            <tr>
-                                <td colspan="6" class="px-6 py-6 text-center text-slate-400">ยังไม่มีประวัติการบันทึกในระบบ</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 4: Master Directory (มีปุ่ม Export เป็น Excel .xlsx) -->
-        <section id="tab-directory" class="tab-content hidden space-y-6">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-wrap justify-between items-center gap-4">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-100">🗂️ ฐานข้อมูลยานพาหนะและกำลังพล</h2>
-                    <p class="text-sm text-slate-300">ค้นหาด้วย ลำดับรถ (#), ชื่อ, ทะเบียน หรือ ยี่ห้อ</p>
+                    <h2 class="text-lg font-bold text-slate-100">🔍 ค้นหาด่วนด้วยลำดับ / ทะเบียน / ชื่อบุคคล</h2>
+                    <p class="text-sm text-slate-300 mt-1">พิมพ์เลขลำดับ หรือทะเบียนรถเพื่อดึงข้อมูลหลักฐานและบันทึกภาพถ่าย</p>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap">
-                    <input type="text" id="directory-search" oninput="searchDirectory(this.value)" placeholder="ค้นหาลำดับรถ (#) / ชื่อ / ทะเบียน / ยี่ห้อ..." class="bg-slate-950 border border-slate-700 px-5 py-2.5 rounded-xl text-sm text-slate-200 placeholder-slate-500 outline-none w-72 focus:border-emerald-500 transition shadow-inner">
-                    <button onclick="exportDirectoryToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow flex items-center gap-2">
-                        📊 Export เป็นไฟล์ Excel (.xlsx)
+                    <!-- ➕ ปุ่มเพิ่มลงทะเบียนรายชื่อใหม่ -->
+                    <button onclick="openAddPersonModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-1.5">
+                        ➕ ลงทะเบียนรายชื่อใหม่
                     </button>
+                    <div class="flex gap-2 text-xs flex-wrap">
+                        <span class="text-slate-300 self-center text-sm">ตัวอย่างด่วน:</span>
+                        <button onclick="quickSearch('1')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-lg border border-slate-700 text-sm font-semibold transition">#1</button>
+                        <button onclick="quickSearch('4')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-lg border border-slate-700 text-sm font-semibold transition">#4</button>
+                        <button onclick="quickSearch('7')" class="bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1.5 rounded-lg border border-slate-700 text-sm font-semibold transition">#7</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="vehicle-directory-grid">
-                <!-- Card Elements Injected Dynamic -->
-            </div>
-
-            <div class="text-center pt-4">
-                <button id="load-more-btn" onclick="loadMoreDirectory()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-8 py-3 rounded-xl text-sm font-bold border border-slate-700 transition hidden shadow">
-                    🔄 โหลดข้อมูลเพิ่มเติม...
+            <form id="search-form" class="flex gap-3">
+                <div class="relative flex-1">
+                    <input type="text" id="search-input" placeholder="พิมพ์เลขลำดับ (เช่น 1, 10) ทะเบียนรถ หรือชื่อบุคคล..." 
+                        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-5 py-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xl font-medium shadow-inner">
+                </div>
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-9 py-4 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-lg">
+                    🔍 ค้นหา
                 </button>
-            </div>
-        </section>
+            </form>
+        </div>
 
-    </main>
+        <div id="search-result-container" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
+            <!-- Data injected dynamically -->
+        </div>
+    </section>
 
-    <!-- 📌 POPUP MODAL (มีปุ่ม พิมพ์ใบสรุป / PDF รายบุคคล) -->
-    <div id="detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-            <!-- Modal Header -->
-            <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span id="modal-seq" class="text-emerald-400 font-bold text-xl">#0</span>
-                        <h3 id="modal-name" class="font-bold text-slate-100 text-xl">ชื่อ-นามสกุล</h3>
-                    </div>
-                    <p id="modal-vehicle" class="text-sm text-slate-300 mt-1">รายละเอียดรถ</p>
-                </div>
-                <button onclick="closeModal()" class="text-slate-300 hover:text-white bg-slate-800 p-2.5 rounded-xl transition hover:bg-slate-700 text-base no-print">
-                    ✖️
-                </button>
-            </div>
+    <!-- TAB 2: Analytics & Realtime Dashboard -->
+    <section id="tab-analytics" class="tab-content hidden space-y-6">
+        <div class="flex justify-between items-center bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg no-print">
+            <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">📊 สรุปยอดสถิติการสัญจร</h2>
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
+                🖨️ พิมพ์รายงาน / พิมพ์เป็น PDF
+            </button>
+        </div>
 
-            <!-- Modal Body -->
-            <div class="p-6 overflow-y-auto space-y-6 flex-1 text-base">
-                <div>
-                    <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                        <span>📸</span> หลักฐานภาพถ่ายระบบดิจิทัล
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center">
-                            <span class="text-sm text-slate-300 mb-2 font-medium">🪪 ภาพถ่ายบัตรประจำตัวประชาชน</span>
-                            <div class="w-full h-52 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center border border-slate-800/80">
-                                <img id="modal-id-card-img" src="" class="object-cover w-full h-full hidden" alt="ภาพถ่ายบัตร">
-                                <div id="modal-id-card-placeholder" class="text-slate-400 text-sm text-center p-4">
-                                    🖼️ ยังไม่มีภาพถ่ายบัตรประชาชนในระบบ
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center">
-                            <span class="text-sm text-slate-300 mb-2 font-medium">🚘 ภาพถ่ายยานพาหนะ / ทะเบียน</span>
-                            <div class="w-full h-52 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center border border-slate-800/80">
-                                <img id="modal-vehicle-img" src="" class="object-cover w-full h-full hidden" alt="ภาพถ่ายรถ">
-                                <div id="modal-vehicle-placeholder" class="text-slate-400 text-sm text-center p-4">
-                                    🖼️ ยังไม่มีภาพถ่ายยานพาหนะในระบบ
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                            <span>⏱️</span> ประวัติ Timestamp สัญจรเข้า-ออก (สะสมตั้งแต่วันเริ่มระบบ)
-                        </h4>
-                        <span class="text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold">Permanent Log</span>
-                    </div>
-
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden max-h-60 overflow-y-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-900 text-slate-300 uppercase sticky top-0 border-b border-slate-800">
-                                <tr>
-                                    <th class="px-5 py-3">วัน-เวลา TIMESTAMP</th>
-                                    <th class="px-5 py-3">การปฏิบัติ</th>
-                                    <th class="px-5 py-3">จุดตรวจ GATE</th>
-                                </tr>
-                            </thead>
-                            <tbody id="modal-timestamp-logs" class="divide-y divide-slate-800/60 text-slate-200">
-                                <!-- Timestamp logs inserted dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-emerald-500">
+                <p class="text-sm text-slate-300 font-medium">รถที่คงค้างอยู่ในพื้นที่ปัจจุบัน</p>
+                <div class="flex items-baseline justify-between mt-3">
+                    <h3 id="stat-current-in" class="text-4xl font-extrabold text-emerald-400">0 คัน</h3>
+                    <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded font-semibold">Realtime</span>
                 </div>
             </div>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-blue-500">
+                <p class="text-sm text-slate-300 font-medium">สรุปยอดสัญจร "ประจำวัน"</p>
+                <div class="flex items-baseline justify-between mt-3">
+                    <h3 id="stat-daily-total" class="text-4xl font-extrabold text-blue-400">0 ครั้ง</h3>
+                    <span class="text-xs bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded font-semibold">Today Log</span>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-amber-500">
+                <p class="text-sm text-slate-300 font-medium">สรุปยอดสัญจร "ประจำสัปดาห์"</p>
+                <div class="flex items-baseline justify-between mt-3">
+                    <h3 id="stat-weekly-total" class="text-4xl font-extrabold text-amber-400">0 ครั้ง</h3>
+                    <span class="text-xs bg-amber-500/20 text-amber-400 px-2.5 py-1 rounded font-semibold">This Week</span>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-purple-500">
+                <p class="text-sm text-slate-300 font-medium">สรุปยอดสัญจร "ประจำเดือน"</p>
+                <div class="flex items-baseline justify-between mt-3">
+                    <h3 id="stat-monthly-total" class="text-4xl font-extrabold text-purple-400">0 ครั้ง</h3>
+                    <span class="text-xs bg-purple-500/20 text-purple-400 px-2.5 py-1 rounded font-semibold">This Month</span>
+                </div>
+            </div>
+        </div>
 
-            <!-- Modal Footer -->
-            <div class="p-5 border-t border-slate-800 bg-slate-900/50 flex justify-between items-center no-print">
-                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
-                    🖨️ พิมพ์ใบประวัติ / PDF
-                </button>
-                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-6 py-2.5 rounded-xl text-sm font-bold transition">
-                    ปิดหน้าต่าง
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-bold text-slate-100">📈 ปริมาณรถผ่านด่านแยกตามช่วงเวลา</h3>
+                    <span class="text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Live Real-time</span>
+                </div>
+                <div class="h-80"><canvas id="peakHoursChart"></canvas></div>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-base font-bold text-slate-100 mb-4">🍩 สัดส่วนประเภทยานพาหนะ</h3>
+                    <div class="h-64 relative flex items-center justify-center"><canvas id="vehicleDonutChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 3: Daily Logs -->
+    <section id="tab-daily-logs" class="tab-content hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-wrap justify-between items-center gap-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-100">📋 ประวัติการบันทึกเข้า-ออก (Daily Logs)</h2>
+                <p class="text-sm text-slate-300">ระบบบันทึกประวัติการผ่านด่านประจำวัน</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow flex items-center gap-1.5 no-print">
+                    🖨️ พิมพ์ / ออกรายงาน PDF
                 </button>
             </div>
         </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+                <table id="daily-logs-table" class="w-full text-left text-base">
+                    <thead class="bg-slate-950 text-slate-300 text-xs uppercase border-b border-slate-800">
+                        <tr>
+                            <th class="px-6 py-4">วันที่ / เวลา TIMESTAMP</th>
+                            <th class="px-6 py-4">ลำดับ</th>
+                            <th class="px-6 py-4">การปฏิบัติ</th>
+                            <th class="px-6 py-4">ทะเบียน / ชนิดรถ</th>
+                            <th class="px-6 py-4">ชื่อ-นามสกุล ผู้ขับขี่</th>
+                            <th class="px-6 py-4">จุดตรวจ (GATE)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-table-body" class="divide-y divide-slate-800 text-slate-200">
+                        <tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">ยังไม่มีประวัติการบันทึกในระบบ</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 4: Master Directory -->
+    <section id="tab-directory" class="tab-content hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-wrap justify-between items-center gap-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-100">🗂️ ฐานข้อมูลยานพาหนะและกำลังพล</h2>
+                <p class="text-sm text-slate-300">ค้นหาด้วย ลำดับรถ (#), ชื่อ, ทะเบียน หรือ ยี่ห้อ</p>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <input type="text" id="directory-search" oninput="searchDirectory(this.value)" placeholder="ค้นหาลำดับรถ (#) / ชื่อ / ทะเบียน..." class="bg-slate-950 border border-slate-700 px-5 py-2.5 rounded-xl text-sm text-slate-200 outline-none w-72 focus:border-emerald-500 shadow-inner">
+                <button onclick="exportDirectoryToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow flex items-center gap-2">
+                    📊 Export เป็นไฟล์ Excel (.xlsx)
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="vehicle-directory-grid"></div>
+
+        <div class="text-center pt-4">
+            <button id="load-more-btn" onclick="loadMoreDirectory()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-8 py-3 rounded-xl text-sm font-bold border border-slate-700 transition hidden shadow">
+                🔄 โหลดข้อมูลเพิ่มเติม...
+            </button>
+        </div>
+    </section>
+
+</main>
+
+<!-- ➕ MODAL ลงทะเบียนรายชื่อ / ยานพาหนะใหม่ -->
+<div id="add-person-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-stone-900 border border-stone-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+        <div class="bg-stone-950 px-6 py-4 border-b border-stone-800 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-emerald-400">➕ ลงทะเบียนรายชื่อ / ยานพาหนะใหม่</h3>
+            <button onclick="closeAddPersonModal()" class="text-stone-400 hover:text-white text-xl">✕</button>
+        </div>
+        
+        <form id="add-person-form" onsubmit="handleAddNewPerson(event)" class="p-6 space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-stone-300 mb-1">ชื่อ - นามสกุล <span class="text-rose-500">*</span></label>
+                <input type="text" id="new-fullname" required placeholder="นายสมชาย ใจดี" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-sm text-stone-100 focus:border-emerald-500 outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-300 mb-1">ทะเบียนรถ <span class="text-rose-500">*</span></label>
+                    <input type="text" id="new-plate" required placeholder="1กข 9999" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-sm text-stone-100 focus:border-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-stone-300 mb-1">สีรถ</label>
+                    <input type="text" id="new-color" placeholder="ดำ / ขาว" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-sm text-stone-100 focus:border-emerald-500 outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-300 mb-1">ชนิดรถ / ยี่ห้อ</label>
+                    <input type="text" id="new-brand" placeholder="Toyota / Honda" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-sm text-stone-100 focus:border-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-stone-300 mb-1">หมายเหตุ / พื้นที่</label>
+                    <input type="text" id="new-remarks" placeholder="ด่านนอแล" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-sm text-stone-100 focus:border-emerald-500 outline-none">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4 border-t border-stone-800">
+                <button type="button" onclick="closeAddPersonModal()" class="px-4 py-2 rounded-xl text-stone-400 hover:bg-stone-800 text-sm">ยกเลิก</button>
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 rounded-xl text-sm shadow">บันทึกข้อมูล</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <!-- Script สำหรับควบคุมโหมดหน้าจอ -->
-    <script>
-        function setScreenMode(mode) {
-            const body = document.getElementById('app-body');
-            body.className = `min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans mode-${mode}`;
+<!-- 📌 POPUP MODAL รายละเอียดและประวัติรายบุคคล -->
+<div id="detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span id="modal-seq" class="text-emerald-400 font-bold text-xl">#0</span>
+                    <h3 id="modal-name" class="font-bold text-slate-100 text-xl">ชื่อ-นามสกุล</h3>
+                </div>
+                <p id="modal-vehicle" class="text-sm text-slate-300 mt-1">รายละเอียดรถ</p>
+            </div>
+            <button onclick="closeModal()" class="text-slate-300 hover:text-white bg-slate-800 p-2.5 rounded-xl transition hover:bg-slate-700 text-base">✖️</button>
+        </div>
 
-            ['mobile', 'tablet', 'pc'].forEach(m => {
-                const btn = document.getElementById(`mode-btn-${m}`);
-                if (m === mode) {
-                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow transition";
-                } else {
-                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition";
-                }
-            });
-        }
-    </script>
+        <div class="p-6 overflow-y-auto space-y-6 flex-1 text-base">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center">
+                    <span class="text-sm text-slate-300 mb-2 font-medium">🪪 ภาพถ่ายบัตรประจำตัวประชาชน</span>
+                    <div class="w-full h-52 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center border border-slate-800">
+                        <img id="modal-id-card-img" src="" class="object-cover w-full h-full hidden" alt="ภาพถ่ายบัตร">
+                        <div id="modal-id-card-placeholder" class="text-slate-400 text-sm text-center p-4">🖼️ ไม่มีภาพถ่ายบัตร</div>
+                    </div>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center">
+                    <span class="text-sm text-slate-300 mb-2 font-medium">🚘 ภาพถ่ายยานพาหนะ</span>
+                    <div class="w-full h-52 bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center border border-slate-800">
+                        <img id="modal-vehicle-img" src="" class="object-cover w-full h-full hidden" alt="ภาพถ่ายรถ">
+                        <div id="modal-vehicle-placeholder" class="text-slate-400 text-sm text-center p-4">🖼️ ไม่มีภาพถ่ายรถ</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3">⏱️ ประวัติ Timestamp สัญจรสะสม</h4>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden max-h-60 overflow-y-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-900 text-slate-300 uppercase sticky top-0 border-b border-slate-800">
+                            <tr>
+                                <th class="px-5 py-3">วัน-เวลา TIMESTAMP</th>
+                                <th class="px-5 py-3">การปฏิบัติ</th>
+                                <th class="px-5 py-3">จุดตรวจ GATE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-timestamp-logs" class="divide-y divide-slate-800 text-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-5 border-t border-slate-800 bg-slate-900/50 flex justify-between items-center">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition">🖨️ พิมพ์ใบประวัติ / PDF</button>
+            <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-6 py-2.5 rounded-xl text-sm font-bold transition">ปิดหน้าต่าง</button>
+        </div>
+    </div>
+</div>
+
 <!-- 📊 ปุ่มเปิดรายงานสรุปยอดกะ -->
-<div class="flex justify-end my-3">
-    <button onclick="openShiftSummaryModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl font-semibold flex items-center gap-2 shadow-md transition border border-amber-500/50">
+<div class="flex justify-center my-6 no-print">
+    <button onclick="openShiftSummaryModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg transition border border-amber-500/50">
         <span>📄</span> พิมพ์รายงานสรุปยอดกะ (Shift Summary)
     </button>
 </div>
 
-<!-- Modal สำหรับแสดงตัวอย่างรายงานก่อนพิมพ์ -->
+<!-- Modal สำหรับรายงานสรุปยอดกะ -->
 <div id="shiftModal" class="fixed inset-0 bg-stone-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-stone-900 border border-stone-700 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        
-        <!-- Modal Header -->
         <div class="bg-stone-800 px-6 py-4 border-b border-stone-700 flex justify-between items-center no-print">
-            <h3 class="text-lg font-bold text-stone-100 flex items-center gap-2">
-                <span>📋</span> รายงานสรุปยอดการผ่านด่านประจำวัน / กะปฏิบัติงาน
-            </h3>
+            <h3 class="text-lg font-bold text-stone-100 flex items-center gap-2"><span>📋</span> รายงานสรุปยอดการผ่านด่านประจำวัน</h3>
             <button onclick="closeShiftSummaryModal()" class="text-stone-400 hover:text-white text-xl font-bold">&times;</button>
         </div>
 
-        <!-- Printable Content Area -->
         <div id="printableArea" class="p-8 overflow-y-auto bg-stone-950 text-stone-200 font-sans space-y-6">
-            <!-- ส่วนหัวกระดาษทางการ -->
             <div class="text-center border-b border-stone-800 pb-4">
                 <h2 class="text-xl font-bold uppercase tracking-wide text-stone-100">กองร้อยทหารม้าที่ ๓ หน่วยเฉพาะกิจไชยานุภาพ</h2>
                 <h3 class="text-base font-semibold text-emerald-400 mt-1">ฐานปฏิบัติการบ้านนอแล - บันทึกรายงานประจำวัน</h3>
                 <p id="report-date-time" class="text-xs text-stone-400 mt-2 font-mono">วันที่พิมพ์รายงาน: --/--/---- --:--</p>
             </div>
 
-            <!-- สรุปตัวเลขภาพรวม -->
             <div class="grid grid-cols-3 gap-4 text-center">
                 <div class="bg-stone-900 p-4 rounded-xl border border-stone-800">
-                    <p class="text-xs text-stone-400">ยานพาหนะเข้าทั้งหมด</p>
+                    <p class="text-xs text-stone-400">เข้าทั้งหมด</p>
                     <p id="summary-total-in" class="text-2xl font-bold text-emerald-400 mt-1">0 คัน</p>
                 </div>
                 <div class="bg-stone-900 p-4 rounded-xl border border-stone-800">
-                    <p class="text-xs text-stone-400">ยานพาหนะออกทั้งหมด</p>
+                    <p class="text-xs text-stone-400">ออกทั้งหมด</p>
                     <p id="summary-total-out" class="text-2xl font-bold text-amber-400 mt-1">0 คัน</p>
                 </div>
                 <div class="bg-stone-900 p-4 rounded-xl border border-stone-800">
-                    <p class="text-xs text-stone-400">รวมผ่านด่านสุทธิ</p>
+                    <p class="text-xs text-stone-400">รวมสุทธิ</p>
                     <p id="summary-total-net" class="text-2xl font-bold text-sky-400 mt-1">0 คัน</p>
                 </div>
             </div>
 
-            <!-- ตารางแยกประเภทพาหนะ -->
             <div>
-                <h4 class="text-sm font-bold text-stone-300 mb-2 uppercase tracking-wider">📊 สรุปยอดแยกตามประเภทยานพาหนะ</h4>
+                <h4 class="text-sm font-bold text-stone-300 mb-2 uppercase">📊 สรุปยอดแยกตามประเภทยานพาหนะ</h4>
                 <div class="border border-stone-800 rounded-xl overflow-hidden">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-stone-900 text-stone-400 border-b border-stone-800">
                             <tr>
                                 <th class="p-3">ประเภทยานพาหนะ / ยี่ห้อ</th>
                                 <th class="p-3 text-center">จำนวน (คัน)</th>
-                                <th class="p-3">หมายเหตุ / สภาพรถส่วนใหญ่</th>
+                                <th class="p-3">หมายเหตุ</th>
                             </tr>
                         </thead>
-                        <tbody id="summary-type-table-body" class="divide-y divide-stone-800">
-                            <!-- ข้อมูลจะถูกเติมด้วย JavaScript -->
-                        </tbody>
+                        <tbody id="summary-type-table-body" class="divide-y divide-stone-800"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- บันทึกเหตุการณ์สำคัญประจำกะ -->
-            <div>
-                <h4 class="text-sm font-bold text-stone-300 mb-2 uppercase tracking-wider">📝 เหตุการณ์สำคัญ / หมายเหตุประจำกะ</h4>
-                <div class="bg-stone-900 p-4 rounded-xl border border-stone-800 text-xs text-stone-300 min-h-[80px]">
-                    <p>- การปฏิบัติงานปกติ ไม่พบสิ่งผิดกฎหมาย กำลังพลทุกนายพร้อมปฏิบัติหน้าที่</p>
-                    <p class="mt-1">- ตรวจตรารักษาความปลอดภัยและคัดกรองยานพาหนะตามมาตรการชายแดนอย่างเคร่งครัด</p>
-                </div>
-            </div>
-
-            <!-- ส่วนลงลายมือชื่อ -->
             <div class="pt-8 grid grid-cols-2 gap-8 text-center text-xs">
                 <div class="space-y-12">
                     <p>ลงชื่อ............................................................เจ้าหน้าที่เวรด่าน</p>
@@ -462,22 +433,30 @@
             </div>
         </div>
 
-        <!-- Modal Footer (ปุ่มสั่งพิมพ์/เซฟ PDF) -->
         <div class="bg-stone-800 px-6 py-4 border-t border-stone-700 flex justify-end gap-3 no-print">
-            <button onclick="closeShiftSummaryModal()" class="px-4 py-2 rounded-xl bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-semibold">ปิดหน้าต่าง</button>
-            <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 shadow">
-                <span>🖨️</span> พิมพ์ / บันทึกเป็น PDF
-            </button>
+            <button onclick="closeShiftSummaryModal()" class="px-4 py-2 rounded-xl bg-stone-700 text-stone-200 text-xs font-semibold">ปิดหน้าต่าง</button>
+            <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow">🖨️ พิมพ์ / PDF</button>
         </div>
     </div>
 </div>
-   <!-- Footer Copyright -->
-    <footer class="bg-stone-900 border-t border-stone-800 py-4 px-6 text-center text-xs text-stone-400 mt-auto no-print">
-        <p>© 2026 ระบบด่านฐานปฏิบัติการบ้านนอแล | พัฒนาและดูแลระบบโดย  <strong class="text-emerald-400">ร้อยตรี ภูริฑัต ชิดใจ</strong> (ม.5 พัน.24 รอ.)</p>
-        <p class="text-[10px] text-stone-500 mt-1">กองร้อยทหารม้าที่ ๓ หน่วยเฉพาะกิจไชยานุภาพ • All Rights Reserved.</p>
-    </footer>
 
-    <!-- External JavaScript File -->
-    <script src="script.js"></script>
+<!-- Footer Copyright -->
+<footer class="bg-stone-900 border-t border-stone-800 py-4 px-6 text-center text-xs text-stone-400 mt-auto no-print">
+    <p>© 2026 ระบบด่านฐานปฏิบัติการบ้านนอแล | พัฒนาและดูแลระบบโดย <strong class="text-emerald-400">ร้อยตรี ภูริฑัต ชิดใจ</strong> (ม.5 พัน.24 รอ.)</p>
+    <p class="text-[10px] text-stone-500 mt-1">กองร้อยทหารม้าที่ ๓ หน่วยเฉพาะกิจไชยานุภาพ • All Rights Reserved.</p>
+</footer>
+
+<!-- External JavaScript File -->
+<script src="script.js"></script>
+<script>
+    function setScreenMode(mode) {
+        const body = document.getElementById('app-body');
+        body.className = `min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans mode-${mode}`;
+        ['mobile', 'tablet', 'pc'].forEach(m => {
+            const btn = document.getElementById(`mode-btn-${m}`);
+            if(btn) btn.className = m === mode ? "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow transition" : "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition";
+        });
+    }
+</script>
 </body>
 </html>
